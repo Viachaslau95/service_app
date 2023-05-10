@@ -13,6 +13,7 @@ class SubscriptionSerializers(serializers.ModelSerializer):
     plan = PlanSerializer()
     client_name = serializers.CharField(source="client.company_name")
     email = serializers.CharField(source="client.user.email")
+    price = serializers.SerializerMethodField()
 
     class Meta:
         model = Subscription
@@ -21,4 +22,11 @@ class SubscriptionSerializers(serializers.ModelSerializer):
             'client_name',
             'email',
             'plan',
+            'price'
         )
+
+    def get_price(self, instance):
+        return instance.service.full_price - instance.service.full_price * (
+                instance.plan.discount_percent / 100
+        )
+
