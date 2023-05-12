@@ -1,8 +1,14 @@
 from celery import shared_task
+from celery_singleton import Singleton
 from django.db.models import F
 
+"""
+Singleton - creating a class in one instance.
+Use in order not to send permanent tasks with the same arguments
+"""
 
-@shared_task
+
+@shared_task(base=Singleton)
 def set_price(subscription_id):
     from services.models import Subscription
 
